@@ -1,7 +1,9 @@
 package naver.webtoon.project.member.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import naver.webtoon.project.common.response.SuccessMessage;
+import naver.webtoon.project.member.dto.request.MemberLoginRequest;
 import naver.webtoon.project.member.dto.request.MemberSignUpRequest;
 import naver.webtoon.project.member.service.MemberService;
 import org.springframework.http.HttpStatus;
@@ -22,5 +24,12 @@ public class MemberController {
     public ResponseEntity<SuccessMessage<Void>> signUp(@RequestBody MemberSignUpRequest member) {
         memberService.signUp(member);
         return new ResponseEntity<>(new SuccessMessage<>("회원가입성공",null), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<SuccessMessage<Void>> login(@RequestBody MemberLoginRequest request, HttpServletResponse response){
+
+        memberService.login(request, response);
+        return new ResponseEntity<>(new SuccessMessage<>("로그인성공",null), HttpStatus.OK);
     }
 }
