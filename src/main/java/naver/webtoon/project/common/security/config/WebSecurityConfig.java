@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import naver.webtoon.project.common.exception.CustomAuthenticationEntryPoint;
 import naver.webtoon.project.common.jwt.JwtAuthenticationFilter;
 import naver.webtoon.project.common.jwt.JwtUtil;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,6 +23,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,7 +51,6 @@ public class WebSecurityConfig {
                 .exceptionHandling((exceptionConfig) ->
                     exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()
                     ));
-//                .securityMatcher("/**"); // ✅ 모든 요청에 대해 CSRF 적용 안 함
 
         return http.build();
     }
