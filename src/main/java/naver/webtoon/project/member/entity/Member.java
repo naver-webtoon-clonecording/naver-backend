@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import naver.webtoon.project.common.time.Timestamped;
 
 @Entity
 @Table(name = "member")
 @Getter
 @ToString(exclude = "memberPassword")
 @NoArgsConstructor
-public class Member {
+public class Member extends Timestamped {
     @Id
     @Column(name = "member_id")
     @GeneratedValue
