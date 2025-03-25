@@ -49,4 +49,10 @@ public class WebtoonService {
 
         webtoon.update(title, description, thumbnail, serializedStatus, author);
     }
+
+    public void deleteWebtoon(Long webtoonId) {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(
+                () -> new WebtoonException(NOT_FOUND_WEBTOON));
+        webtoonRepository.delete(webtoon);
+    }
 }

@@ -31,4 +31,9 @@ public class WebtoonController {
     }
 
     //등록된 웹툰 삭제
+    @DeleteMapping("/webtoon/{webtoonId}")
+    public ResponseEntity<SuccessMessage<Void>> deleteWebtoon(@PathVariable Long webtoonId) {
+        webtoonService.deleteWebtoon(webtoonId);
+        return new ResponseEntity<>(new SuccessMessage<>("웹툰삭제성공",null), HttpStatus.OK);
+    }
 }
