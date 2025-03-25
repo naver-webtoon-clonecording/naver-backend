@@ -109,9 +109,12 @@ public class WebtoonService {
         }
     }
 
+    @Transactional
     public void deleteWebtoon(Long webtoonId) {
         Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(
                 () -> new WebtoonException(NOT_FOUND_WEBTOON));
+        webtoonHashTagRepository.deleteByWebtoonId(webtoon.getId());
+        webtoonPublishingDayRepository.deleteByWebtoonId(webtoon.getId());
         webtoonRepository.delete(webtoon);
     }
 }
