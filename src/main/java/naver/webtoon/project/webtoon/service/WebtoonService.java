@@ -63,6 +63,8 @@ public class WebtoonService {
         Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(
                 () -> new WebtoonException(NOT_FOUND_WEBTOON));
         updateWebtoon(webtoon, request);
+        updateWebtoonPublishingDay(webtoon, request);
+        updateWebtoonHashTag(webtoon, request);
     }
 
     private void updateWebtoon(Webtoon webtoon, WebtoonUpdateRequest request){
@@ -74,6 +76,37 @@ public class WebtoonService {
                 () -> new WebtoonException(NOT_FOUND_AUTHOR));
 
         webtoon.update(title, description, thumbnail, serializedStatus, author);
+    }
+
+    private void updateWebtoonPublishingDay(Webtoon webtoon, WebtoonUpdateRequest request) {
+        webtoonPublishingDayRepository.deleteByWebtoonId(webtoon.getId());
+        saveWebtoonPublishingDay(webtoon, request);
+    }
+
+    private void saveWebtoonPublishingDay(Webtoon webtoon, WebtoonUpdateRequest request) {
+        for (String dayOfTheWeek : request.getPublishingDay()) {
+            DayOfTheWeek dayOfTheWeekEnum = DayOfTheWeek.toEnum(dayOfTheWeek);
+            PublishingDay publishingDay = publishingDayRepository.findByDayOfTheWeek(dayOfTheWeekEnum).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_PUBLISHING_DAY));
+            WebtoonPublishingDay webtoonPublishingDay = request.toWebtoonPublishingDay(webtoon, publishingDay);
+
+            webtoonPublishingDayRepository.save(webtoonPublishingDay);
+        }
+    }
+
+    private void updateWebtoonHashTag(Webtoon webtoon, WebtoonUpdateRequest request) {
+        webtoonHashTagRepository.deleteByWebtoonId(webtoon.getId());
+        saveWebtoonHashTag(webtoon, request);
+    }
+
+    private void saveWebtoonHashTag(Webtoon webtoon, WebtoonUpdateRequest request) {
+        for (String name : request.getHashTag()) {
+            HashTag hashTag = hashTagRepository.findByName(name).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_HASH_TAG));
+
+            WebtoonHashTag webtoonHashTag = request.toWebtoonHashTag(webtoon, hashTag);
+            webtoonHashTagRepository.save(webtoonHashTag);
+        }
     }
 
     public void deleteWebtoon(Long webtoonId) {
