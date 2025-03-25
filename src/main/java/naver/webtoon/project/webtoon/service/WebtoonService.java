@@ -122,10 +122,13 @@ public class WebtoonService {
     }
 
     public WebtoonInfoListResponse getPopularWebtoonsByDayOfWeekAndWithin30Days(String publishingDay) {
-        //연재일 테이블에서 publishingDay로 검색
         DayOfTheWeek dayOfTheWeek = DayOfTheWeek.toEnum(publishingDay);
-        //조회수가 많은 순서대로(여러개 웹툰), publishingDay로 weboontRepository에서 검색
         List<Webtoon> webtoons = webtoonRepository.findOnGoingWebtoonByDayOfTheWeek(dayOfTheWeek);
+        return WebtoonInfoListResponse.toResponse(webtoons);
+    }
+
+    public WebtoonInfoListResponse getPopularWebtoonsByComplete() {
+        List<Webtoon> webtoons = webtoonRepository.findPopularWebtoonsByComplete();
         return WebtoonInfoListResponse.toResponse(webtoons);
     }
 }

@@ -44,4 +44,11 @@ public class WebtoonController {
         WebtoonInfoListResponse response = webtoonService.getPopularWebtoonsByDayOfWeekAndWithin30Days(publishingDay);
         return new ResponseEntity<>(new SuccessMessage<>("요일별인기순웹툰조회성공", response), HttpStatus.OK);
     }
+
+    //완결웹툰인기순조회
+    @GetMapping("/webtoon/finished/popular")
+    public ResponseEntity<SuccessMessage<WebtoonInfoListResponse>> getPopularWebtoonsByComplete() {
+        WebtoonInfoListResponse response = webtoonService.getPopularWebtoonsByComplete();
+        return new ResponseEntity<>(new SuccessMessage<>("완결웹툰인기순조회성공", response), HttpStatus.OK);
+    }
 }
