@@ -5,6 +5,7 @@ import naver.webtoon.project.author.repository.AuthorRepository;
 import naver.webtoon.project.common.exception.WebtoonException;
 import naver.webtoon.project.author.entity.Author;
 import naver.webtoon.project.webtoon.dto.request.WebtoonUpdateRequest;
+import naver.webtoon.project.webtoon.dto.response.WebtoonInfoListResponse;
 import naver.webtoon.project.webtoon.entity.*;
 import naver.webtoon.project.webtoon.dto.request.WebtoonRegisterRequest;
 import naver.webtoon.project.webtoon.entity.enums.DayOfTheWeek;
@@ -12,6 +13,8 @@ import naver.webtoon.project.webtoon.entity.enums.SerializedStatus;
 import naver.webtoon.project.webtoon.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static naver.webtoon.project.common.exception.ErrorCode.*;
 
@@ -116,5 +119,13 @@ public class WebtoonService {
         webtoonHashTagRepository.deleteByWebtoonId(webtoon.getId());
         webtoonPublishingDayRepository.deleteByWebtoonId(webtoon.getId());
         webtoonRepository.delete(webtoon);
+    }
+
+    public WebtoonInfoListResponse getPopularWebtoonsByDayOfWeekAndWithin30Days(String publishingDay) {
+        //연재일 테이블에서 publishingDay로 검색
+        DayOfTheWeek dayOfTheWeek = DayOfTheWeek.toEnum(publishingDay);
+        //조회수가 많은 순서대로(여러개 웹툰), publishingDay로 weboontRepository에서 검색
+        List<Webtoon> webtoons = webtoonRepository.findOnGoingWebtoonByDayOfTheWeek(dayOfTheWeek);
+        return WebtoonInfoListResponse.toResponse(webtoons);
     }
 }
