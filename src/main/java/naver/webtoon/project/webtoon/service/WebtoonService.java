@@ -5,15 +5,15 @@ import naver.webtoon.project.author.repository.AuthorRepository;
 import naver.webtoon.project.common.exception.WebtoonException;
 import naver.webtoon.project.author.entity.Author;
 import naver.webtoon.project.webtoon.dto.request.WebtoonUpdateRequest;
-import naver.webtoon.project.webtoon.entity.Webtoon;
+import naver.webtoon.project.webtoon.entity.*;
 import naver.webtoon.project.webtoon.dto.request.WebtoonRegisterRequest;
+import naver.webtoon.project.webtoon.entity.enums.DayOfTheWeek;
 import naver.webtoon.project.webtoon.entity.enums.SerializedStatus;
-import naver.webtoon.project.webtoon.repository.WebtoonRepository;
+import naver.webtoon.project.webtoon.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static naver.webtoon.project.common.exception.ErrorCode.NOT_FOUND_AUTHOR;
-import static naver.webtoon.project.common.exception.ErrorCode.NOT_FOUND_WEBTOON;
+import static naver.webtoon.project.common.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,15 +21,41 @@ public class WebtoonService {
 
     private final WebtoonRepository webtoonRepository;
     private final AuthorRepository authorRepository;
+    private final PublishingDayRepository publishingDayRepository;
+    private final WebtoonPublishingDayRepository webtoonPublishingDayRepository;
+    private final HashTagRepository hashTagRepository;
+    private final WebtoonHashTagRepository webtoonHashTagRepository;
 
     @Transactional
     public void registerWebtoon(WebtoonRegisterRequest request){
-        //등록된 작가 정보가 있는지 작가 이름으로 조회
         Author author = authorRepository.findByName(request.getAuthor()).orElseThrow(
                 () -> new WebtoonException(NOT_FOUND_AUTHOR));
         Webtoon webtoon = request.toWebtoon(author);
 
         webtoonRepository.save(webtoon);
+        saveWebtoonPublishingDay(webtoon, request);
+        saveWebtoonHashTag(webtoon, request);
+    }
+
+    private void saveWebtoonPublishingDay(Webtoon webtoon, WebtoonRegisterRequest request) {
+        for (String dayOfTheWeek : request.getPublishingDay()) {
+            DayOfTheWeek dayOfTheWeekEnum = DayOfTheWeek.toEnum(dayOfTheWeek);
+            PublishingDay publishingDay = publishingDayRepository.findByDayOfTheWeek(dayOfTheWeekEnum).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_PUBLISHING_DAY));
+
+            WebtoonPublishingDay webtoonPublishingDay = request.toWebtoonPublishingDay(webtoon, publishingDay);
+            webtoonPublishingDayRepository.save(webtoonPublishingDay);
+        }
+    }
+
+    private void saveWebtoonHashTag(Webtoon webtoon, WebtoonRegisterRequest request) {
+        for (String name : request.getHashTag()) {
+            HashTag hashTag = hashTagRepository.findByName(name).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_HASH_TAG));
+
+            WebtoonHashTag webtoonHashTag = request.toWebtoonHashTag(webtoon, hashTag);
+            webtoonHashTagRepository.save(webtoonHashTag);
+        }
     }
 
     @Transactional

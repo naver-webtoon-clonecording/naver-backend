@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import naver.webtoon.project.author.entity.Author;
-import naver.webtoon.project.webtoon.entity.Webtoon;
+import naver.webtoon.project.webtoon.entity.*;
 import naver.webtoon.project.webtoon.entity.enums.SerializedStatus;
 
 import java.util.List;
@@ -31,6 +31,20 @@ public class WebtoonRegisterRequest {
                 .description(description)
                 .thumbnail(thumbnail)
                 .serializedStatus(serializedStatusEnum)
+                .build();
+    }
+
+    public WebtoonPublishingDay toWebtoonPublishingDay(Webtoon webtoon, PublishingDay publishingDay) {
+        return WebtoonPublishingDay.builder()
+                .webtoon(webtoon)
+                .publishingDay(publishingDay)
+                .build();
+    }
+
+    public WebtoonHashTag toWebtoonHashTag(Webtoon webtoon, HashTag hashTag) {
+        return WebtoonHashTag.builder()
+                .webtoon(webtoon)
+                .hashTag(hashTag)
                 .build();
     }
 }
