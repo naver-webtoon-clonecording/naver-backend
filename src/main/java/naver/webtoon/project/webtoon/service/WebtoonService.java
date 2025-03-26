@@ -127,6 +127,12 @@ public class WebtoonService {
         return WebtoonInfoListResponse.toResponse(webtoons);
     }
 
+    public WebtoonInfoListResponse getLastUpdateWebtoonsByDayOfWeek(String publishingDay) {
+        DayOfTheWeek dayOfTheWeek = DayOfTheWeek.toEnum(publishingDay);
+        List<Webtoon> webtoons = webtoonRepository.findLastUpdatedWebtoonsByDayOfTheWeek(dayOfTheWeek);
+        return WebtoonInfoListResponse.toResponse(webtoons);
+    }
+
     public WebtoonInfoListResponse getPopularWebtoonsByComplete() {
         List<Webtoon> webtoons = webtoonRepository.findPopularWebtoonsByComplete();
         return WebtoonInfoListResponse.toResponse(webtoons);
