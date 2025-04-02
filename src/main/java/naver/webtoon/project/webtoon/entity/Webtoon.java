@@ -9,6 +9,8 @@ import naver.webtoon.project.author.entity.Author;
 import naver.webtoon.project.common.time.Timestamped;
 import naver.webtoon.project.webtoon.entity.enums.SerializedStatus;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,6 +37,9 @@ public class Webtoon extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="author_id")
     private Author author;
+
+    @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
+    private List<InterestedWebtoon> interestedWebtoon;
 
     @Builder
     public Webtoon(Long id, String title, String thumbnail, String description, SerializedStatus serializedStatus, Author author) {

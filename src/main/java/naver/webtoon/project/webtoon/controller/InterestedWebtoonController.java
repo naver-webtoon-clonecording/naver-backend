@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import naver.webtoon.project.common.UserDetailsImpl;
 import naver.webtoon.project.common.response.SuccessMessage;
 import naver.webtoon.project.webtoon.service.InterestedWebtoonService;
-import naver.webtoon.project.webtoon.service.WebtoonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

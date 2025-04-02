@@ -12,9 +12,12 @@ public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
 
     @Query("SELECT wpd.webtoon FROM WebtoonPublishingDay wpd " +
             "JOIN wpd.publishingDay pd " +
+            "LEFT JOIN wpd.webtoon.interestedWebtoon f " +
             "WHERE pd.dayOfTheWeek = :dayOfTheWeek " +
             "AND (wpd.webtoon.serializedStatus = 'BREAK' " +
-            "OR wpd.webtoon.serializedStatus = 'SERIALIZED')")
+            "OR wpd.webtoon.serializedStatus = 'SERIALIZED')" +
+            "GROUP BY wpd.webtoon.id " +
+            "ORDER BY COUNT(f.id) DESC")
     List<Webtoon> findOnGoingWebtoonByDayOfTheWeek(@Param("dayOfTheWeek")DayOfTheWeek dayOfTheWeek);
 
     @Query("SELECT wpd.webtoon FROM WebtoonPublishingDay wpd " +
@@ -25,6 +28,7 @@ public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
             "ORDER BY wpd.webtoon.updatedAt DESC")
     List<Webtoon> findLastUpdatedWebtoonsByDayOfTheWeek(@Param("dayOfTheWeek")DayOfTheWeek dayOfTheWeek);
 
+    //완결된 웹툰 중 최고 조회수 별로 내림차순 수정 필요
     @Query("SELECT wt FROM Webtoon wt " +
             "WHERE wt.serializedStatus = 'COMPLETE' ")
     List<Webtoon> findPopularWebtoonsByComplete();
