@@ -40,4 +40,9 @@ public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
             "WHERE w.serializedStatus = 'COMPLETE' " +
             "ORDER BY w.updatedAt DESC")
     List<Webtoon> findLastestWebtoonsByComplete();
+
+    @Query("SELECT COUNT(wh.webtoon) FROM WebtoonHashTag wh " +
+            "JOIN wh.hashTag ht " +
+            "WHERE ht.name = :hashtag")
+    int countWebtoonsByHashtag(@Param("hashtag")String hashtag);
 }

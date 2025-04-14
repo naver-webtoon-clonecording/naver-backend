@@ -72,4 +72,11 @@ public class WebtoonController {
         WebtoonInfoListResponse response = webtoonService.getLatestCompletedWebtoons();
         return new ResponseEntity<>(new SuccessMessage<>("최근완결순조회성공", response), HttpStatus.OK);
     }
+
+    //해시태그별모든웹툰수조회
+    @GetMapping("/webtoon/{hashtag}/count")
+    public ResponseEntity<SuccessMessage<Integer>> getWebtoonCountByHashtag(@PathVariable String hashtag) {
+        int count = webtoonService.getWebtoonCountByHashtag(hashtag);
+        return new ResponseEntity<>(new SuccessMessage<>("요일별인기순웹툰조회성공", count), HttpStatus.OK);
+    }
 }

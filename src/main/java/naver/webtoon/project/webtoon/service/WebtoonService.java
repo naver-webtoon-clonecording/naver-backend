@@ -153,4 +153,8 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findLastestWebtoonsByComplete();
         return WebtoonInfoListResponse.toResponse(webtoons);
     }
+
+    public Integer getWebtoonCountByHashtag(String hashtag) {
+        return webtoonRepository.countWebtoonsByHashtag(hashtag);
+    }
 }
