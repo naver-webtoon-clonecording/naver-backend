@@ -29,11 +29,15 @@ public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
     List<Webtoon> findLastUpdatedWebtoonsByDayOfTheWeek(@Param("dayOfTheWeek")DayOfTheWeek dayOfTheWeek);
 
     //완결된 웹툰 중 최고 조회수 별로 내림차순 수정 필요
-    @Query("SELECT wpd.webtoon FROM WebtoonPublishingDay wpd " +
-            "JOIN wpd.publishingDay pd " +
-            "INNER JOIN wpd.webtoon.interestedWebtoon f " +
-            "WHERE wpd.webtoon.serializedStatus = 'COMPLETE' " +
-            "GROUP BY wpd.webtoon.id " +
+    @Query("SELECT w FROM InterestedWebtoon f " +
+            "JOIN f.webtoon w " +
+            "WHERE w.serializedStatus = 'COMPLETE' " +
+            "GROUP BY w.id " +
             "ORDER BY COUNT(f.id) DESC")
     List<Webtoon> findPopularWebtoonsByComplete();
+
+    @Query("SELECT w FROM Webtoon w " +
+            "WHERE w.serializedStatus = 'COMPLETE' " +
+            "ORDER BY w.updatedAt DESC")
+    List<Webtoon> findLastestWebtoonsByComplete();
 }

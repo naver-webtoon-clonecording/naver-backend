@@ -147,4 +147,10 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findOnGoingWebtoonByDayOfTheWeek(dayOfTheWeek);
         return WebtoonInfoListResponse.toResponse(webtoons);
     }
+
+    @Transactional(readOnly = true)
+    public WebtoonInfoListResponse getLatestCompletedWebtoons(){
+        List<Webtoon> webtoons = webtoonRepository.findLastestWebtoonsByComplete();
+        return WebtoonInfoListResponse.toResponse(webtoons);
+    }
 }
