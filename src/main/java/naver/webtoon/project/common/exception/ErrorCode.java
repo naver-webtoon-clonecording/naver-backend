@@ -39,6 +39,8 @@ public enum ErrorCode {
     FREE_RELEASE_DATE_MUST_BE_AFTER_THAN_CURRENT_DATE(HttpStatus.BAD_REQUEST, "EPISODE_005", "무료 공개일은 현재 날짜보다 이후여야 합니다."),
     PRIVATE_EPISODE_INACCESSIBILITY(HttpStatus.BAD_REQUEST, "EPISODE_006", "비공개 에피소드는 접근 불가능합니다."),
     PUBLIC_EPISODE_INACCESSIBILITY(HttpStatus.BAD_REQUEST, "EPISODE_007", "공개 에피소드는 접근 불가능합니다."),
+    NOT_FOUND_INTERESTED_WEBTOON(HttpStatus.NOT_FOUND, "INTERESTED_WEBTOON_001", "찾을 수 없는 관심 웹툰입니다."),
+    DUPLICATE_INTERESTED_WEBTOON(HttpStatus.BAD_REQUEST, "INTERESTED_WEBTOON_002", "관심 웹툰은 중복될 수 없습니다."),
 
     ;
 
