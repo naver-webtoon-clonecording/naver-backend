@@ -1,8 +1,10 @@
 package naver.webtoon.project.episode.service;
 
 import lombok.RequiredArgsConstructor;
+import naver.webtoon.project.author.entity.Author;
 import naver.webtoon.project.common.exception.WebtoonException;
 import naver.webtoon.project.episode.dto.request.EpisodeRegisterRequest;
+import naver.webtoon.project.episode.dto.request.EpisodeUpdateRequest;
 import naver.webtoon.project.episode.entity.Episode;
 import naver.webtoon.project.episode.repository.EpisodeRepository;
 import naver.webtoon.project.webtoon.entity.Webtoon;
@@ -65,5 +67,25 @@ public class EpisodeService {
         if(freeReleaseDate != null && (currentDate.isAfter(freeReleaseDate) || currentDate.isEqual(freeReleaseDate))){
             throw new WebtoonException(FREE_RELEASE_DATE_MUST_BE_AFTER_THAN_CURRENT_DATE);
         }
+    }
+
+    @Transactional
+    public void updateWebtoon(Long episodeId, EpisodeUpdateRequest request) {
+        String title = request.getTitle();
+        String content = request.getContent();
+        String postscript = request.getPostscript();
+        Boolean isPublic = request.getIsPublic();
+        LocalDate freeReleaseDate = request.getFreeReleaseDate();
+        Integer neededCookieAmount = request.getNeededCookieAmount();
+
+        throwIfFreeForPrivateEpisode(isPublic, neededCookieAmount);
+        throwIfPaidForPublicEpisode(isPublic, neededCookieAmount);
+        throwIfFreeReleaseDateEnteredForPublicEpisode(isPublic, freeReleaseDate);
+        throwIfFreeReleaseDateIsCurrentDateOrLess(freeReleaseDate);
+
+        Episode episode = episodeRepository.findById(episodeId).orElseThrow(
+                () -> new WebtoonException(NOT_FOUND_EPISODE));
+
+        episode.update(title, content, postscript, isPublic, freeReleaseDate, neededCookieAmount);
     }
 }
