@@ -88,4 +88,10 @@ public class EpisodeService {
 
         episode.update(title, content, postscript, isPublic, freeReleaseDate, neededCookieAmount);
     }
+
+    public void deleteEpisode(Long episodeId) {
+        Episode episode = episodeRepository.findById(episodeId).orElseThrow(
+                () -> new WebtoonException(NOT_FOUND_EPISODE));
+        episodeRepository.delete(episode);
+    }
 }

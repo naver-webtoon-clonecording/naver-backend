@@ -27,4 +27,11 @@ public class EpisodeController {
         return new ResponseEntity<>(new SuccessMessage<>("에피소드수정성공", null), HttpStatus.OK);
     }
 
+    @DeleteMapping("/episode/{episodeId}")
+    public ResponseEntity<SuccessMessage<Void>> deleteEpisode(@PathVariable Long episodeId) {
+        episodeService.deleteEpisode(episodeId);
+        return new ResponseEntity<>(new SuccessMessage<>("에피소드삭제성공", null), HttpStatus.OK);
+    }
+
+
 }
