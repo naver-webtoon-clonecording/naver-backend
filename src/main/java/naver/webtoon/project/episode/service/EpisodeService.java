@@ -5,6 +5,7 @@ import naver.webtoon.project.common.exception.WebtoonException;
 import naver.webtoon.project.episode.dto.request.EpisodeRegisterRequest;
 import naver.webtoon.project.episode.dto.request.EpisodeUpdateRequest;
 import naver.webtoon.project.episode.dto.response.EpisodeInfo;
+import naver.webtoon.project.episode.dto.response.EpisodeInfoListResponse;
 import naver.webtoon.project.episode.entity.Episode;
 import naver.webtoon.project.episode.repository.EpisodeRepository;
 import naver.webtoon.project.webtoon.entity.Webtoon;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static naver.webtoon.project.common.exception.ErrorCode.*;
@@ -101,5 +103,11 @@ public class EpisodeService {
     public Optional<EpisodeInfo> getEpisodeInfo(Long episodeId) {
         return episodeRepository.findById(episodeId)
                 .map(EpisodeInfo::toEpisode);
+    }
+
+    @Transactional(readOnly = true)
+    public EpisodeInfoListResponse getWebtoonAllEpisodeInfo(Long webtoonId) {
+        List<Episode> episodes = episodeRepository.findByWebtoonIdToAllEpisode(webtoonId);
+        return EpisodeInfoListResponse.toResponse(episodes);
     }
 }
