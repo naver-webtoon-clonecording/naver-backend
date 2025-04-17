@@ -1,10 +1,10 @@
 package naver.webtoon.project.episode.service;
 
 import lombok.RequiredArgsConstructor;
-import naver.webtoon.project.author.entity.Author;
 import naver.webtoon.project.common.exception.WebtoonException;
 import naver.webtoon.project.episode.dto.request.EpisodeRegisterRequest;
 import naver.webtoon.project.episode.dto.request.EpisodeUpdateRequest;
+import naver.webtoon.project.episode.dto.response.EpisodeInfo;
 import naver.webtoon.project.episode.entity.Episode;
 import naver.webtoon.project.episode.repository.EpisodeRepository;
 import naver.webtoon.project.webtoon.entity.Webtoon;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static naver.webtoon.project.common.exception.ErrorCode.*;
 
@@ -89,9 +90,16 @@ public class EpisodeService {
         episode.update(title, content, postscript, isPublic, freeReleaseDate, neededCookieAmount);
     }
 
+    @Transactional
     public void deleteEpisode(Long episodeId) {
         Episode episode = episodeRepository.findById(episodeId).orElseThrow(
                 () -> new WebtoonException(NOT_FOUND_EPISODE));
         episodeRepository.delete(episode);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<EpisodeInfo> getEpisodeInfo(Long episodeId) {
+        return episodeRepository.findById(episodeId)
+                .map(EpisodeInfo::toEpisode);
     }
 }
