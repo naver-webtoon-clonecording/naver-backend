@@ -99,8 +99,9 @@ public class EpisodeService {
         episodeRepository.delete(episode);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Optional<EpisodeInfo> getEpisodeInfo(Long episodeId) {
+        episodeRepository.updateViews(episodeId);
         return episodeRepository.findById(episodeId)
                 .map(EpisodeInfo::toEpisode);
     }
