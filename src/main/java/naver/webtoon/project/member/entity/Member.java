@@ -1,21 +1,18 @@
 package naver.webtoon.project.member.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import naver.webtoon.project.common.time.Timestamped;
 
 @Entity
 @Table(name = "member")
 @Getter
 @ToString(exclude = "memberPassword")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends Timestamped {
     @Id
     @Column(name = "member_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
