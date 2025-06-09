@@ -42,8 +42,7 @@ public class Webtoon extends Timestamped {
     private List<InterestedWebtoon> interestedWebtoon;
 
     @Builder
-    public Webtoon(Long id, String title, String thumbnail, String description, SerializedStatus serializedStatus, Author author) {
-        this.id = id;
+    public Webtoon(String title, String thumbnail, String description, SerializedStatus serializedStatus, Author author) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.description = description;

@@ -21,6 +21,16 @@ public class WebtoonRegisterRequest {
     private List<String> publishingDay;
     private List<String> hashTag;
 
+    public WebtoonRegisterRequest(String title, String author, String description, String thumbnail, String serializedStatus, List<String> publishingDay, List<String> hashTag) {
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.thumbnail = thumbnail;
+        this.serializedStatus = serializedStatus;
+        this.publishingDay = publishingDay;
+        this.hashTag = hashTag;
+    }
+
     @Builder
     public Webtoon toWebtoon(Author author){
         SerializedStatus serializedStatusEnum = SerializedStatus.toEnum(serializedStatus);

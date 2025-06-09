@@ -21,8 +21,7 @@ public class HashTag extends Timestamped {
     private String name;
 
     @Builder
-    public HashTag(Long id, String name) {
-        this.id = id;
+    public HashTag(String name) {
         this.name = name;
     }
 }
