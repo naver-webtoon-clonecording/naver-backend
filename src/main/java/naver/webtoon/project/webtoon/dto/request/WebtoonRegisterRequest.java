@@ -1,5 +1,7 @@
 package naver.webtoon.project.webtoon.dto.request;
 
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +14,17 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class WebtoonRegisterRequest {
-
+    @NotNull
     private String title;
+    @NotNull
     private String author;
+    @NotNull
     private String description;
+    @NotNull
     private String thumbnail;
+    @NotNull
     private String serializedStatus;
+    @NotNull
     private List<String> publishingDay;
     private List<String> hashTag;
 

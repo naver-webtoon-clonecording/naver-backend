@@ -1,5 +1,6 @@
 package naver.webtoon.project.webtoon.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import naver.webtoon.project.common.response.SuccessMessage;
 import naver.webtoon.project.webtoon.dto.request.WebtoonRegisterRequest;
@@ -19,7 +20,7 @@ public class WebtoonController {
 
     //웹툰 등록
     @PostMapping("/webtoon")
-    public ResponseEntity<SuccessMessage<Void>> registerWebtoon(@RequestBody WebtoonRegisterRequest request) {
+    public ResponseEntity<SuccessMessage<Void>> registerWebtoon(@Valid @RequestBody WebtoonRegisterRequest request) {
         webtoonService.registerWebtoon(request);
         return new ResponseEntity<>(new SuccessMessage<>("웹툰등록성공", null), HttpStatus.CREATED);
     }
@@ -77,6 +78,6 @@ public class WebtoonController {
     @GetMapping("/webtoon/{hashtag}/count")
     public ResponseEntity<SuccessMessage<Integer>> getWebtoonCountByHashtag(@PathVariable String hashtag) {
         int count = webtoonService.getWebtoonCountByHashtag(hashtag);
-        return new ResponseEntity<>(new SuccessMessage<>("요일별인기순웹툰조회성공", count), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessMessage<>("해시태그별모든웹툰수조회성공", count), HttpStatus.OK);
     }
 }

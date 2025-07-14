@@ -40,7 +40,6 @@ public class Webtoon extends Timestamped {
 
     @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
     private List<InterestedWebtoon> interestedWebtoon;
-
     @Builder
     public Webtoon(String title, String thumbnail, String description, SerializedStatus serializedStatus, Author author) {
         this.title = title;
