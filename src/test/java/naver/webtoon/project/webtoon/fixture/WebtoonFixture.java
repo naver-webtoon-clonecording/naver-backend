@@ -1,7 +1,5 @@
 package naver.webtoon.project.webtoon.fixture;
 
-import naver.webtoon.project.author.entity.Author;
-import naver.webtoon.project.member.entity.Member;
 import naver.webtoon.project.webtoon.entity.Webtoon;
 
 public class WebtoonFixture {
