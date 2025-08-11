@@ -24,8 +24,7 @@ public class PublishingDay extends Timestamped {
     private DayOfTheWeek dayOfTheWeek;
 
     @Builder
-    public PublishingDay(Long id, DayOfTheWeek dayOfTheWeek) {
-        this.id = id;
+    public PublishingDay(DayOfTheWeek dayOfTheWeek) {
         this.dayOfTheWeek = dayOfTheWeek;
     }
 }

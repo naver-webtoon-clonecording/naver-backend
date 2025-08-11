@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import naver.webtoon.project.common.time.Timestamped;
+import naver.webtoon.project.webtoon.entity.enums.DayOfTheWeek;
 
 @Entity
 @Getter
@@ -24,9 +25,15 @@ public class WebtoonPublishingDay extends Timestamped {
     private PublishingDay publishingDay;
 
     @Builder
-    public WebtoonPublishingDay(Long id, Webtoon webtoon, PublishingDay publishingDay){
-        this.id = id;
+    public WebtoonPublishingDay(Webtoon webtoon, PublishingDay publishingDay){
         this.webtoon = webtoon;
         this.publishingDay = publishingDay;
+    }
+
+    public static WebtoonPublishingDay updateWebtoonPublishingDay(Webtoon webtoon, PublishingDay publishingDay){
+        return WebtoonPublishingDay.builder()
+                .webtoon(webtoon)
+                .publishingDay(publishingDay)
+                .build();
     }
 }

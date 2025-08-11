@@ -21,8 +21,7 @@ public class Author extends Timestamped {
     private String name;
 
     @Builder
-    public Author(Long id, String name){
-        this.id = id;
+    public Author(String name){
         this.name = name;
     }
 }
