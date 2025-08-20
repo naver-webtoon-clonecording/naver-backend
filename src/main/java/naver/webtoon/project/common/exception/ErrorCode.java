@@ -42,6 +42,7 @@ public enum ErrorCode {
     NOT_FOUND_INTERESTED_WEBTOON(HttpStatus.NOT_FOUND, "INTERESTED_WEBTOON_001", "찾을 수 없는 관심 웹툰입니다."),
     DUPLICATE_INTERESTED_WEBTOON(HttpStatus.BAD_REQUEST, "INTERESTED_WEBTOON_002", "관심 웹툰은 중복될 수 없습니다."),
 
+    NOT_AVAILABLE_LOCK(HttpStatus.CONFLICT, "CONCURRENCY_001", "락 획득이 불가능 합니다.")
     ;
 
 
