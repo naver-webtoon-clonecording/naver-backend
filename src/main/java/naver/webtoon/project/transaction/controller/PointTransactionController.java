@@ -19,8 +19,8 @@ public class PointTransactionController {
     private final PointTransactionService pointTransactionService;
 
     @GetMapping
-    public ResponseEntity<SuccessMessage<PointTransactionResponseList>> retrieveCurrentMemberPointTransactions(UserDetailsImpl userDetails){
-        PointTransactionResponseList response = pointTransactionService.retrieveCurrentMemberPointTransactions(userDetails.getMember());
+    public ResponseEntity<SuccessMessage<PointTransactionResponseList>> retireCurrentMemberPointTransactions(UserDetailsImpl userDetails){
+        PointTransactionResponseList response = pointTransactionService.retireCurrentMemberPointTransactions(userDetails.getMember());
         return new ResponseEntity<>(new SuccessMessage<>("쿠키 거래 기록 조회 성공", response), HttpStatus.OK);
     }
 }

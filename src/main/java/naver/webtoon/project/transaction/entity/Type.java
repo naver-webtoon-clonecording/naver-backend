@@ -13,7 +13,7 @@ public enum Type {
 
     private final String koreanName;
 
-    private static String toKoreanName(Type type){
+    public static String toKoreanName(Type type){
         return switch(type){
             case CHARGE -> CHARGE.koreanName;
             case CONSUME -> CONSUME.koreanName;
