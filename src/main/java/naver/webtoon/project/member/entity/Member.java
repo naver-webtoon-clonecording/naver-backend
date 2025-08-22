@@ -37,4 +37,8 @@ public class Member extends Timestamped {
     public void chargePoint(Integer amount){
         this.pointAmount += amount;
     }
+    public void chargeCookie(Integer cookie){
+        this.pointAmount -= 100 * cookie;
+        this.cookieCount += cookie;
+    }
 }

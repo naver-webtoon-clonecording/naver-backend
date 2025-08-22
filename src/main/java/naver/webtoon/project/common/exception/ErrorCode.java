@@ -41,6 +41,7 @@ public enum ErrorCode {
     PUBLIC_EPISODE_INACCESSIBILITY(HttpStatus.BAD_REQUEST, "EPISODE_007", "공개 에피소드는 접근 불가능합니다."),
     NOT_FOUND_INTERESTED_WEBTOON(HttpStatus.NOT_FOUND, "INTERESTED_WEBTOON_001", "찾을 수 없는 관심 웹툰입니다."),
     DUPLICATE_INTERESTED_WEBTOON(HttpStatus.BAD_REQUEST, "INTERESTED_WEBTOON_002", "관심 웹툰은 중복될 수 없습니다."),
+    DEFICIENT_POINT(HttpStatus.BAD_REQUEST, "POINT_001", "포인트가 부족합니다."),
 
     ;
 
