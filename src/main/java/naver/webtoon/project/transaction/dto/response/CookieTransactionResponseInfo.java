@@ -21,7 +21,7 @@ public class CookieTransactionResponseInfo {
         this.cookieTransactionId = cookieTransactionId;
         this.type = type;
         this.amount = amount;
-        this.createdAt = cr가eatedAt;
+        this.createdAt = createdAt;
     }
 
     public static CookieTransactionResponseInfo toResponse(CookieTransaction CookieTransaction){
