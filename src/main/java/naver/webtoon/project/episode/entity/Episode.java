@@ -66,4 +66,8 @@ public class Episode extends Timestamped {
         this.freeReleaseDate = freeReleaseDate;
         this.neededCookieAmount = neededCookieAmount;
     }
+
+    public void incrementView(){
+        this.views++;
+    }
 }
