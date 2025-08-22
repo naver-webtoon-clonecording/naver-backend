@@ -6,6 +6,7 @@ import naver.webtoon.project.member.entity.Member;
 import naver.webtoon.project.member.repository.MemberRepository;
 import naver.webtoon.project.transaction.dto.request.CookieTransactionChargeRequest;
 import naver.webtoon.project.transaction.dto.request.PointTransactionChargeRequest;
+import naver.webtoon.project.transaction.dto.response.CookieTransactionResponseInfoList;
 import naver.webtoon.project.transaction.dto.response.PointTransactionResponseList;
 import naver.webtoon.project.transaction.entity.CookieTransaction;
 import naver.webtoon.project.transaction.entity.PointTransaction;
@@ -50,10 +51,9 @@ public class CookieTransactionService {
         }
     }
 
-    /*@Transactional(readOnly = true)
-    public PointTransactionResponseList retireCurrentMemberPointTransactions(Member member){
-        List<PointTransaction> pointTransactions = pointTransactionRepository.findByMember(member);
-
-        return PointTransactionResponseList.toResponse(pointTransactions);
-    }*/
+    @Transactional(readOnly = true)
+    public CookieTransactionResponseInfoList retireCurrentMemberCookieTransactions(Member member) {
+        List<CookieTransaction> cookieTransactions = cookieTransactionRepository.findByMember(member);
+        return CookieTransactionResponseInfoList.toResponse(cookieTransactions);
+    }
 }

@@ -5,6 +5,7 @@ import naver.webtoon.project.common.UserDetailsImpl;
 import naver.webtoon.project.common.response.SuccessMessage;
 import naver.webtoon.project.transaction.dto.request.CookieTransactionChargeRequest;
 import naver.webtoon.project.transaction.dto.request.PointTransactionChargeRequest;
+import naver.webtoon.project.transaction.dto.response.CookieTransactionResponseInfoList;
 import naver.webtoon.project.transaction.dto.response.PointTransactionResponseList;
 import naver.webtoon.project.transaction.service.CookieTransactionService;
 import naver.webtoon.project.transaction.service.PointTransactionService;
@@ -27,9 +28,9 @@ public class CookieTransactionController {
         return new ResponseEntity<>(new SuccessMessage<>("쿠키 충전 성공", null), HttpStatus.CREATED);
     }
 
-    /*@GetMapping
-    public ResponseEntity<SuccessMessage<PointTransactionResponseList>> retireCurrentMemberPointTransactions(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        PointTransactionResponseList response = pointTransactionService.retireCurrentMemberPointTransactions(userDetails.getMember());
-        return new ResponseEntity<>(new SuccessMessage<>("포인트 거래 기록 조회 성공", response), HttpStatus.OK);
-    }*/
+    @GetMapping
+    public ResponseEntity<SuccessMessage<CookieTransactionResponseInfoList>> retireCurrentMemberPointTransactions(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        CookieTransactionResponseInfoList response = cookieTransactionService.retireCurrentMemberCookieTransactions(userDetails.getMember());
+        return new ResponseEntity<>(new SuccessMessage<>("쿠키 거래 기록 조회 성공", response), HttpStatus.OK);
+    }
 }
