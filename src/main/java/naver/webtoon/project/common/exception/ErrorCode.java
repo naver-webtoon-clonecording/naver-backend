@@ -43,6 +43,12 @@ public enum ErrorCode {
     DUPLICATE_INTERESTED_WEBTOON(HttpStatus.BAD_REQUEST, "INTERESTED_WEBTOON_002", "관심 웹툰은 중복될 수 없습니다."),
     DEFICIENT_POINT(HttpStatus.BAD_REQUEST, "POINT_001", "포인트가 부족합니다."),
 
+    DEFICIENT_COOKIE(HttpStatus.BAD_REQUEST, "COOKIE_001", "쿠키가 부족합니다."),
+
+    NOT_FOUND_OWNED_EPISODE(HttpStatus.NOT_FOUND, "OWN_EPISODE_001", "찾을 수 없는 소장 에피소드입니다."),
+    DUPLICATION_OWNED_EPISODE(HttpStatus.BAD_REQUEST, "OWN_EPISODE_002", "이미 구입한 에피소드입니다."),
+
+    PAGE_OUT_OF_BOUND(HttpStatus.BAD_REQUEST, "OWN_EPISODE_003", "읽을 페이지가 페이지의 범위를 벗어났습니다."),
     ;
 
 
