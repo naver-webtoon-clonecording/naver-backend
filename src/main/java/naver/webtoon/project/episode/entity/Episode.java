@@ -41,12 +41,15 @@ public class Episode extends Timestamped {
     @Column(name = "free_release_date")
     private LocalDate freeReleaseDate;
 
+    @Column(nullable = false)
+    private Integer totalPageCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "webtoon_id")
     private Webtoon webtoon;
 
     @Builder
-    public Episode(Long id, String title, String content, String postscript, Integer views, Boolean isPublic, Integer neededCookieAmount, LocalDate freeReleaseDate, Webtoon webtoon){
+    public Episode(Long id, String title, String content, String postscript, Integer views, Boolean isPublic, Integer neededCookieAmount, LocalDate freeReleaseDate, Webtoon webtoon, Integer totalPageCount){
         this.id = id;
         this.title = title;
         this.content = content;
@@ -56,6 +59,7 @@ public class Episode extends Timestamped {
         this.neededCookieAmount = neededCookieAmount;
         this.freeReleaseDate = freeReleaseDate;
         this.webtoon = webtoon;
+        this.totalPageCount = totalPageCount;
     }
 
     public void update(String title, String content, String postscript, Boolean isPublic, LocalDate freeReleaseDate, Integer neededCookieAmount) {
