@@ -15,6 +15,7 @@ public class EpisodeRegisterRequest {
     private String content;
     private String postscript;
     private Integer views;
+    private Integer totalPageCount;
     private Boolean isPublic;
     private LocalDate freeReleaseDate;
     @Min(value = 0, message =  "필요한 쿠키 양은 0개 이상입니다.")
@@ -29,6 +30,7 @@ public class EpisodeRegisterRequest {
                 .isPublic(isPublic)
                 .freeReleaseDate(freeReleaseDate)
                 .neededCookieAmount(neededCookieAmount)
+                .totalPageCount(totalPageCount)
                 .webtoon(webtoon)
                 .build();
     }

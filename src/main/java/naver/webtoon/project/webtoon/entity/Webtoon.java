@@ -31,6 +31,9 @@ public class Webtoon extends Timestamped {
     private String description;
 
     @Column(nullable = false)
+    private Integer totalViewCount;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SerializedStatus serializedStatus;
 
@@ -55,5 +58,9 @@ public class Webtoon extends Timestamped {
         this.thumbnail = thumbnail;
         this.serializedStatus = serializedStatus;
         this.author = author;
+    }
+
+    public void incrementTotalViewCount(){
+        this.totalViewCount++;
     }
 }

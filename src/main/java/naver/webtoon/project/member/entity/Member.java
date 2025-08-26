@@ -41,4 +41,8 @@ public class Member extends Timestamped {
         this.pointAmount -= 100 * cookie;
         this.cookieCount += cookie;
     }
+
+    public void consumeCookie(Integer usefulCookies){
+        this.cookieCount -= usefulCookies;
+    }
 }
