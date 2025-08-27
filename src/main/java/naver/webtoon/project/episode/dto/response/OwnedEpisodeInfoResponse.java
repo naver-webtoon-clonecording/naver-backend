@@ -15,7 +15,7 @@ public class OwnedEpisodeInfoResponse {
         this.currentReadingPage = currentReadingPage;
     }
 
-    public static OwnedEpisodeInfoResponse toRespone(OwnedEpisode ownedEpisode) {
+    public static OwnedEpisodeInfoResponse toResponse(OwnedEpisode ownedEpisode) {
         return OwnedEpisodeInfoResponse.builder()
                 .content(ownedEpisode.getEpisode().getContent())
                 .currentReadingPage(ownedEpisode.getCurrentReadingPage())
