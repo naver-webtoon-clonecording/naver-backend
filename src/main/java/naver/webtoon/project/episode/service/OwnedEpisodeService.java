@@ -3,6 +3,7 @@ package naver.webtoon.project.episode.service;
 import lombok.RequiredArgsConstructor;
 import naver.webtoon.project.common.exception.WebtoonException;
 import naver.webtoon.project.episode.dto.response.OwnedEpisodeInfoResponse;
+import naver.webtoon.project.episode.dto.response.OwnedEpisodeInfoResponseList;
 import naver.webtoon.project.episode.entity.Episode;
 import naver.webtoon.project.episode.entity.OwnedEpisode;
 import naver.webtoon.project.episode.repository.EpisodeRepository;
@@ -14,6 +15,8 @@ import naver.webtoon.project.transaction.repository.CookieTransactionRepository;
 import naver.webtoon.project.webtoon.entity.Webtoon;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static naver.webtoon.project.common.exception.ErrorCode.*;
 
@@ -67,7 +70,7 @@ public class OwnedEpisodeService {
         episode.incrementView();
         webtoon.incrementTotalViewCount();
 
-        return OwnedEpisodeInfoResponse.toRespone(ownedEpisode);
+        return OwnedEpisodeInfoResponse.toResponse(ownedEpisode);
     }
 
     @Transactional
@@ -104,5 +107,11 @@ public class OwnedEpisodeService {
         if(1 >= currentReadingPage){
             throw new WebtoonException(PAGE_OUT_OF_BOUND);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public OwnedEpisodeInfoResponseList retrieveOwnEpisodesByMember(Member member) {
+        List<OwnedEpisode> ownedEpisodes = ownedEpisodeRepository.findByMemberId(member.getId());
+        return OwnedEpisodeInfoResponseList.toResponse(ownedEpisodes);
     }
 }
