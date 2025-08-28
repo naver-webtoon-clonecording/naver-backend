@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import naver.webtoon.project.common.UserDetailsImpl;
 import naver.webtoon.project.common.exception.WebtoonException;
 import naver.webtoon.project.member.entity.Member;
+import naver.webtoon.project.webtoon.dto.response.InterestedWebtoonInfoResponseList;
 import naver.webtoon.project.webtoon.entity.InterestedWebtoon;
 import naver.webtoon.project.webtoon.entity.Webtoon;
 import naver.webtoon.project.webtoon.repository.InterestedWebtoonRepository;
 import naver.webtoon.project.webtoon.repository.WebtoonRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static naver.webtoon.project.common.exception.ErrorCode.*;
 
@@ -22,16 +25,17 @@ public class InterestedWebtoonService {
 
     @Transactional
     public void registerInterestedWebtoon(Member currentMember, Long webtoonId) {
+        throwIfDuflicatedInterestedWebtoon(currentMember.getId(), webtoonId);
         Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(
                 () -> new WebtoonException(NOT_FOUND_WEBTOON));
-        throwIfDuflicatedInterestedWebtoon(currentMember, webtoon);
 
         InterestedWebtoon interestedWebtoon = InterestedWebtoon.updateInterestedWebtoon(currentMember, webtoon);
+        webtoon.incrementLikeCount();
         interestedWebtoonRepository.save(interestedWebtoon);
     }
 
-    private void throwIfDuflicatedInterestedWebtoon(Member member, Webtoon webtoon) {
-        if (interestedWebtoonRepository.existsByMemberAndWebtoon(member, webtoon)) {
+    private void throwIfDuflicatedInterestedWebtoon(Long memberId, Long webtoonId) {
+        if (interestedWebtoonRepository.existsByMemberIdAndWebtoonId(memberId, webtoonId)) {
             throw new WebtoonException(DUPLICATE_INTERESTED_WEBTOON);
         }
     }
@@ -45,6 +49,13 @@ public class InterestedWebtoonService {
                 () -> new WebtoonException(NOT_FOUND_INTERESTED_WEBTOON)
         );
 
+        webtoon.decrementLikeCount();
         interestedWebtoonRepository.delete(interestedWebtoon);
+    }
+
+    @Transactional(readOnly = true)
+    public InterestedWebtoonInfoResponseList retrieveInterestedWebtoonsByMember(Member member) {
+        List<InterestedWebtoon> interestedWebtoons = interestedWebtoonRepository.findByMemberId(member.getId());
+        return InterestedWebtoonInfoResponseList.toResponse(interestedWebtoons);
     }
 }
