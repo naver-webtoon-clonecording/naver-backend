@@ -32,6 +32,8 @@ public class Webtoon extends Timestamped {
 
     @Column(nullable = false)
     private Integer totalViewCount;
+    @Column(nullable = false)
+    private Integer likeCount;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -44,10 +46,12 @@ public class Webtoon extends Timestamped {
     @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
     private List<InterestedWebtoon> interestedWebtoon;
     @Builder
-    public Webtoon(String title, String thumbnail, String description, SerializedStatus serializedStatus, Author author) {
+    public Webtoon(String title, String thumbnail, String description, Integer totalViewCount, Integer likeCount ,SerializedStatus serializedStatus, Author author) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.description = description;
+        this.totalViewCount = totalViewCount;
+        this.likeCount = likeCount;
         this.serializedStatus = serializedStatus;
         this.author = author;
     }
@@ -62,5 +66,13 @@ public class Webtoon extends Timestamped {
 
     public void incrementTotalViewCount(){
         this.totalViewCount++;
+    }
+
+    public void incrementLikeCount(){
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount(){
+        this.likeCount--;
     }
 }
