@@ -2,10 +2,12 @@ package naver.webtoon.project.episode.service;
 
 import lombok.RequiredArgsConstructor;
 import naver.webtoon.project.common.exception.WebtoonException;
+import naver.webtoon.project.common.redis.service.RedisService;
 import naver.webtoon.project.episode.dto.response.OwnedEpisodeInfoResponse;
 import naver.webtoon.project.episode.dto.response.OwnedEpisodeInfoResponseList;
 import naver.webtoon.project.episode.entity.Episode;
 import naver.webtoon.project.episode.entity.OwnedEpisode;
+import naver.webtoon.project.episode.entity.PaymentType;
 import naver.webtoon.project.episode.repository.EpisodeRepository;
 import naver.webtoon.project.episode.repository.OwnedEpisodeRepository;
 import naver.webtoon.project.member.entity.Member;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static naver.webtoon.project.common.exception.ErrorCode.*;
+import static naver.webtoon.project.episode.entity.PaymentType.FREE;
+import static naver.webtoon.project.episode.entity.PaymentType.PAID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class OwnedEpisodeService {
     private final EpisodeRepository episodeRepository;
     private final OwnedEpisodeRepository ownedEpisodeRepository;
     private final CookieTransactionRepository cookieTransactionRepository;
+    private final RedisService redisService;
 
     @Transactional
     public void buyEpisode(Member currentMember, Long episodeId) {
@@ -70,7 +75,17 @@ public class OwnedEpisodeService {
         episode.incrementView();
         webtoon.incrementTotalViewCount();
 
+        PaymentType paymentType = getEpisodePaymentType(episode.getIsPublic());
+        redisService.increaseDailyView(webtoon.getTitle(), paymentType);
+
         return OwnedEpisodeInfoResponse.toResponse(ownedEpisode);
+    }
+
+    private PaymentType getEpisodePaymentType(Boolean isPublic) {
+        PaymentType paymentType = PAID;
+        if(isPublic) paymentType = FREE;
+
+        return paymentType;
     }
 
     @Transactional
