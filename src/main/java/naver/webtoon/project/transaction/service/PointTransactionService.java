@@ -9,11 +9,15 @@ import naver.webtoon.project.transaction.dto.request.PointTransactionChargeReque
 import naver.webtoon.project.transaction.dto.response.PointTransactionResponseList;
 import naver.webtoon.project.transaction.entity.PointTransaction;
 import naver.webtoon.project.transaction.repository.PointTransactionRepository;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static naver.webtoon.project.common.exception.ErrorCode.NOT_AVAILABLE_LOCK;
 import static naver.webtoon.project.common.exception.ErrorCode.NOT_FOUND_MEMBER;
 
 @Service
@@ -22,6 +26,7 @@ public class PointTransactionService {
 
     private final PointTransactionRepository pointTransactionRepository;
     private final MemberRepository memberRepository;
+    private final RedissonClient redissonClient;
 
     @Transactional(readOnly = true)
     public PointTransactionResponseList retireCurrentMemberPointTransactions(Member member){
@@ -32,11 +37,28 @@ public class PointTransactionService {
 
     @Transactional
     public void chargePoint(Member currentMember, PointTransactionChargeRequest request) {
-        Member member = memberRepository.findById(currentMember.getId()).orElseThrow(
-                () -> new WebtoonException(NOT_FOUND_MEMBER));
+        String lockName = "charge-point" + " / " + "username: " + currentMember.getUsername();
+        RLock lock = redissonClient.getLock(lockName);
 
-        member.chargePoint(request.getAmount());
-        PointTransaction pointTransaction = request.toPointTransaction(member);
-        pointTransactionRepository.save(pointTransaction);
+        try{
+            boolean isLocked = lock.tryLock(2, 5, TimeUnit.SECONDS);
+            if(!isLocked){
+                throw new WebtoonException(NOT_AVAILABLE_LOCK);
+            }
+
+            Member member = memberRepository.findById(currentMember.getId()).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_MEMBER));
+
+            member.chargePoint(request.getAmount());
+            PointTransaction pointTransaction = request.toPointTransaction(member);
+            pointTransactionRepository.save(pointTransaction);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 }
