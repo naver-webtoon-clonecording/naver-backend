@@ -21,6 +21,9 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private Integer pointAmount;
+
     @Column(name = "cookie_count", nullable = false)
     private Integer cookieCount;
 
@@ -30,5 +33,16 @@ public class Member extends Timestamped {
         this.username = username;
         this.password = password;
         this.cookieCount = cookieCount;
+    }
+    public void chargePoint(Integer amount){
+        this.pointAmount += amount;
+    }
+    public void chargeCookie(Integer cookie){
+        this.pointAmount -= 100 * cookie;
+        this.cookieCount += cookie;
+    }
+
+    public void consumeCookie(Integer usefulCookies){
+        this.cookieCount -= usefulCookies;
     }
 }

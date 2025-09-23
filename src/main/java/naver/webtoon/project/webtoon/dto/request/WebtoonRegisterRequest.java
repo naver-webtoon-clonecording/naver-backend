@@ -24,11 +24,13 @@ public class WebtoonRegisterRequest {
     private String thumbnail;
     @NotNull
     private String serializedStatus;
+    private Integer totalViewCount;
+    private Integer likeCount;
     @NotNull
     private List<String> publishingDay;
     private List<String> hashTag;
 
-    public WebtoonRegisterRequest(String title, String author, String description, String thumbnail, String serializedStatus, List<String> publishingDay, List<String> hashTag) {
+    public WebtoonRegisterRequest(String title, String author, String description, String thumbnail, String serializedStatus ,List<String> publishingDay, List<String> hashTag) {
         this.title = title;
         this.author = author;
         this.description = description;
@@ -47,6 +49,8 @@ public class WebtoonRegisterRequest {
                 .author(author)
                 .description(description)
                 .thumbnail(thumbnail)
+                .totalViewCount(0)
+                .likeCount(0)
                 .serializedStatus(serializedStatusEnum)
                 .build();
     }

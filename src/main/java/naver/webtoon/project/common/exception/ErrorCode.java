@@ -41,7 +41,14 @@ public enum ErrorCode {
     PUBLIC_EPISODE_INACCESSIBILITY(HttpStatus.BAD_REQUEST, "EPISODE_007", "공개 에피소드는 접근 불가능합니다."),
     NOT_FOUND_INTERESTED_WEBTOON(HttpStatus.NOT_FOUND, "INTERESTED_WEBTOON_001", "찾을 수 없는 관심 웹툰입니다."),
     DUPLICATE_INTERESTED_WEBTOON(HttpStatus.BAD_REQUEST, "INTERESTED_WEBTOON_002", "관심 웹툰은 중복될 수 없습니다."),
+    DEFICIENT_POINT(HttpStatus.BAD_REQUEST, "POINT_001", "포인트가 부족합니다."),
 
+    DEFICIENT_COOKIE(HttpStatus.BAD_REQUEST, "COOKIE_001", "쿠키가 부족합니다."),
+
+    NOT_FOUND_OWNED_EPISODE(HttpStatus.NOT_FOUND, "OWN_EPISODE_001", "찾을 수 없는 소장 에피소드입니다."),
+    DUPLICATION_OWNED_EPISODE(HttpStatus.BAD_REQUEST, "OWN_EPISODE_002", "이미 구입한 에피소드입니다."),
+
+    PAGE_OUT_OF_BOUND(HttpStatus.BAD_REQUEST, "OWN_EPISODE_003", "읽을 페이지가 페이지의 범위를 벗어났습니다."),
     NOT_AVAILABLE_LOCK(HttpStatus.CONFLICT, "CONCURRENCY_001", "락 획득이 불가능 합니다.")
     ;
 

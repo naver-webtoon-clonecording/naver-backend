@@ -45,4 +45,6 @@ public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
             "JOIN wh.hashTag ht " +
             "WHERE ht.name = :hashtag")
     int countWebtoonsByHashtag(@Param("hashtag")String hashtag);
+
+    List<Webtoon> findByTitleIn(List<String> title);
 }
