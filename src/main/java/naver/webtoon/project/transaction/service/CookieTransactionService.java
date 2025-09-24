@@ -10,13 +10,15 @@ import naver.webtoon.project.transaction.entity.CookieTransaction;
 import naver.webtoon.project.transaction.entity.PointTransaction;
 import naver.webtoon.project.transaction.repository.CookieTransactionRepository;
 import naver.webtoon.project.transaction.repository.PointTransactionRepository;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import static naver.webtoon.project.common.exception.ErrorCode.DEFICIENT_POINT;
-import static naver.webtoon.project.common.exception.ErrorCode.NOT_FOUND_MEMBER;
+import static naver.webtoon.project.common.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,21 +27,39 @@ public class CookieTransactionService {
     private final CookieTransactionRepository cookieTransactionRepository;
     private final PointTransactionRepository pointTransactionRepository;
     private final MemberRepository memberRepository;
+    private final RedissonClient redissonClient;
 
     @Transactional
     public void chargeCookie(Member currentMember, CookieTransactionChargeRequest request) {
-        Member member = memberRepository.findById(currentMember.getId()).orElseThrow(
-                () -> new WebtoonException(NOT_FOUND_MEMBER));
+        String lockName = "charge-cookie" + " / " + "username: " + currentMember.getUsername();
+        RLock lock = redissonClient.getLock(lockName);
 
-        Integer cookieAmount = request.getAmount();
-        throwIfNotEnoughPoint(cookieAmount, currentMember);
+        try{
+            boolean isLocked = lock.tryLock(2, 5, TimeUnit.SECONDS);
+            if(!isLocked){
+                throw new WebtoonException(NOT_AVAILABLE_LOCK);
+            }
 
-        member.chargeCookie(cookieAmount);
-        CookieTransaction cookieTransaction = request.toCookieTransaction(member);
-        cookieTransactionRepository.save(cookieTransaction);
+            Member member = memberRepository.findById(currentMember.getId()).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_MEMBER));
 
-        PointTransaction pointTransaction = request.toPointTransaction(member);
-        pointTransactionRepository.save(pointTransaction);
+            Integer cookieAmount = request.getAmount();
+            throwIfNotEnoughPoint(cookieAmount, currentMember);
+
+            member.chargeCookie(cookieAmount);
+            CookieTransaction cookieTransaction = request.toCookieTransaction(member);
+            cookieTransactionRepository.save(cookieTransaction);
+
+            PointTransaction pointTransaction = request.toPointTransaction(member);
+            pointTransactionRepository.save(pointTransaction);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     private void throwIfNotEnoughPoint(Integer cookieAmount, Member currentMember) {

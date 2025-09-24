@@ -15,10 +15,13 @@ import naver.webtoon.project.member.repository.MemberRepository;
 import naver.webtoon.project.transaction.entity.CookieTransaction;
 import naver.webtoon.project.transaction.repository.CookieTransactionRepository;
 import naver.webtoon.project.webtoon.entity.Webtoon;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static naver.webtoon.project.common.exception.ErrorCode.*;
 import static naver.webtoon.project.episode.entity.PaymentType.FREE;
@@ -32,29 +35,47 @@ public class OwnedEpisodeService {
     private final OwnedEpisodeRepository ownedEpisodeRepository;
     private final CookieTransactionRepository cookieTransactionRepository;
     private final RedisService redisService;
+    private final RedissonClient redissonClient;
 
     @Transactional
     public void buyEpisode(Member currentMember, Long episodeId) {
-        Member member = memberRepository.findById(currentMember.getId()).orElseThrow(
-                () -> new WebtoonException(NOT_FOUND_MEMBER));
-        Episode episode = episodeRepository.findById(episodeId).orElseThrow(
-                () -> new WebtoonException(NOT_FOUND_EPISODE));
+        String lockName = "buy-episode" + " / " + "username: " + currentMember.getUsername() + "episodeId: " + episodeId;
+        RLock lock = redissonClient.getLock(lockName);
 
-        if (ownedEpisodeRepository.existsByMemberAndEpisode(member, episode)) {
-            throw new WebtoonException(DUPLICATION_OWNED_EPISODE);
+        try{
+            boolean isLocked = lock.tryLock(2, 5, TimeUnit.SECONDS);
+            if(!isLocked){
+                throw new WebtoonException(NOT_AVAILABLE_LOCK);
+            }
+
+            Member member = memberRepository.findById(currentMember.getId()).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_MEMBER));
+            Episode episode = episodeRepository.findById(episodeId).orElseThrow(
+                    () -> new WebtoonException(NOT_FOUND_EPISODE));
+
+            if (ownedEpisodeRepository.existsByMemberAndEpisode(member, episode)) {
+                throw new WebtoonException(DUPLICATION_OWNED_EPISODE);
+            }
+
+            int availableCookie = member.getCookieCount();
+            int requiredCookieAmount = episode.getNeededCookieAmount();
+
+            throwIfNotEnoughCookie(availableCookie, requiredCookieAmount);
+
+            member.consumeCookie(requiredCookieAmount);
+            OwnedEpisode ownedEpisode = OwnedEpisode.createOwenEpisode(member, episode);
+            ownedEpisodeRepository.save(ownedEpisode);
+
+            CookieTransaction cookieTransaction = CookieTransaction.createConsumeCookieTransaction(member, requiredCookieAmount);
+            cookieTransactionRepository.save(cookieTransaction);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
-
-        int availableCookie = member.getCookieCount();
-        int requiredCookieAmount = episode.getNeededCookieAmount();
-
-        throwIfNotEnoughCookie(availableCookie, requiredCookieAmount);
-
-        member.consumeCookie(requiredCookieAmount);
-        OwnedEpisode ownedEpisode = OwnedEpisode.createOwenEpisode(member, episode);
-        ownedEpisodeRepository.save(ownedEpisode);
-
-        CookieTransaction cookieTransaction = CookieTransaction.createConsumeCookieTransaction(member, requiredCookieAmount);
-        cookieTransactionRepository.save(cookieTransaction);
     }
 
     private void throwIfNotEnoughCookie(int availableCookie, int requiredCookieAmount) {

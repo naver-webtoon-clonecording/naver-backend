@@ -49,6 +49,7 @@ public enum ErrorCode {
     DUPLICATION_OWNED_EPISODE(HttpStatus.BAD_REQUEST, "OWN_EPISODE_002", "이미 구입한 에피소드입니다."),
 
     PAGE_OUT_OF_BOUND(HttpStatus.BAD_REQUEST, "OWN_EPISODE_003", "읽을 페이지가 페이지의 범위를 벗어났습니다."),
+    NOT_AVAILABLE_LOCK(HttpStatus.CONFLICT, "CONCURRENCY_001", "락 획득이 불가능 합니다.")
     ;
 
 
